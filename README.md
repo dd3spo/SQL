@@ -1,3 +1,3 @@
-#**Damian Despo's SQL Portfolio**
+# Damian Despo's SQL Portfolio
 
-Welcome to my SQL Portfolio! 
+## Welcome to my SQL Portfolio! 
