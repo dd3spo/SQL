@@ -1,0 +1,57 @@
+# learned how to create my own table
+
+# this project reveals insights about Famous Actors and which movie the played in. 
+
+CREATE TABLE actors (id INTEGER PRIMARY KEY, full_name TEXT);
+
+INSERT INTO actors (id, full_name) VALUES
+(1, 'Jackie Chan'),
+(2, 'Jason Statham'), 
+(3, 'Leonardo DiCaprio');
+
+CREATE TABLE movies (id INTEGER PRIMARY KEY, title TEXT, release_year INTEGER, genre TEXT);
+
+INSERT INTO movies (id, title,
+release_year, genre) VALUES
+(1, 'Rush Hour', 1998, 'Action Comedy'),
+(2, 'Crank', 2006, 'Action'),
+(3, 'Inception', 2010, 'Sci-Fi'),
+(4, 'Drunken Master', 1978, 'Action Comedy'),
+(5, 'The Transporter', 2002, 'Action'),
+(6, 'Titanic', 1997, 'Romance Drama');
+
+CREATE TABLE started_in (actor_id INTEGER, movie_id INTEGER);
+
+INSERT INTO started_in (actor_id, movie_id ) VALUES
+(1, 1), -- 'Rush Hour'
+(1, 4), -- 'Druken Master'
+(2, 2), -- 'Crank'
+(2, 5), -- 'Transporter'
+(3, 3), -- 'Inception'
+(3, 6); -- 'Titanic'
+
+#All the actors and movies they started in from new to old 
+SELECT a.full_name, m.title,
+m.release_year
+FROM actors a
+INNER JOIN started_in si 
+ON a.id = si.actor_id
+INNER JOIN movies m 
+ON si.movie_id = m.id
+order by release_year desc;
+
+#Full name of the actor who stared in an Action Comedy genre
+SELECT full_name
+FROM actors
+WHERE id IN(SELECT id
+FROM movies
+WHERE genre='Action Comedy');
+
+#Case statement where each movie is categorized as 'Old', 'Recent', 'Modern', or 'Unknown' based on its release year.
+SELECT title,genre, release_year,
+CASE WHEN release_year < 2000 THEN 'Old'
+WHEN release_year >= 2000 AND release_year < 2010 THEN 'Recent'
+WHEN release_year >= 2010 THEN 'Modern'
+ELSE 'Unknown' 
+END AS Category
+FROM movies;
