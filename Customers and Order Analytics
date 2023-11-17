@@ -1,18 +1,17 @@
-SELECT * FROM BIT_DB.customers
-WHERE length(order_id) = 6
-AND order_id <>'OrderID'
+#In this SQL, I'm querying a database with multiple tables in it to quantify statistics about customer and order data. 
 
-SELECT * FROM BIT_DB.JanSales LIMIT 10
-
+#1. shows how many orders where placed in january
 SELECT COUNT(Quantity) FROM BIT_DB.JanSales
 WHERE length(orderID)=6
 AND orderID <>'';
 
+#2. shows how many of the orders where iphone
 SELECT COUNT(orderID) FROM BIT_DB.JanSales
 WHERE length(orderID)=6
 AND orderID <>''
 AND Product='iPhone';
 
+#3. Select the customer account numbers for all the orders that were placed in February. 
 SELECT distinct acctnum 
 FROM BIT_DB.customers c
 JOIN BIT_DB.FebSales Feb
@@ -20,19 +19,23 @@ ON c.order_id=FEB.orderid
 WHERE length(orderID)=6
 AND orderID <>'';
 
+#4. Shows The cheapest product in january and the price 
 SELECT Product, MIN(price) as cheapest
 FROM BIT_DB.JanSales;
 
+#5. The total revenue of all the products in january 
 SELECT SUM(Quantity*price) as revenue, product
 FROM BIT_DB.JanSales
 GROUP BY product;
 
+#6. Shows the products that were sold in February at 548 Lincoln St, Seattle, WA 98101, and the amount of each that were sold, and the the total revenue?
 SELECT product,sum(quantity)*price as revenue
 ,SUM(quantity)
 FROM BIT_DB.FebSales 
 WHERE location='548 Lincoln St, Seattle, WA 98101'
 GROUP BY product;
 
+#7. Shows how many customers ordered more than 2 products at a time, and the average amount spent for those customers
 SELECT COUNT(DISTINCT c.acctnum)
 ,AVG(quantity*price) as spent
 FROM BIT_DB.customers C
