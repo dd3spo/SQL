@@ -1,0 +1,37 @@
+SELECT * FROM BIT_DB.Spotifydata;
+
+SELECT artist_name, track_name, AVG(danceability)
+FROM BIT_DB.Spotifydata
+GROUP BY artist_name, track_name;
+
+SELECT track_name, artist_name, popularity
+FROM  BIT_DB.Spotifydata
+ORDER BY popularity DESC LIMIT 10;
+
+SELECT artist_name, track_name, duration_ms,
+    CASE WHEN duration_ms >= 250000 THEN 'long'
+        WHEN duration_ms >= 200000 THEN 'medium'
+        ELSE 'short'
+END AS duration_category
+FROM BIT_DB.Spotifydata
+ORDER BY duration_category asc;
+
+SELECT artist_name, track_name, popularity,duration_ms
+FROM BIT_DB.Spotifydata
+WHERE popularity LIKE '9%'  AND time_signature=4;
+
+SELECT artist_name, track_name, MIN(energy) AS min_energy
+FROM BIT_DB.Spotifydata;
+
+SELECT track_name,song_key
+FROM BIT_DB.Spotifydata
+WHERE song_key  between '2' and '8'; 
+
+SELECT artist_name, track_name, popularity, energy, danceability,
+    CASE
+        WHEN popularity >= 90 AND energy >= 70 AND danceability >= 70 THEN 'High Popularity, High Energy, High Danceability'
+        WHEN popularity >= 80 AND energy >= 60 AND danceability >= 60 THEN 'High Popularity, Moderate Energy, Moderate Danceability'
+        WHEN popularity >= 70 AND energy >= 50 AND danceability >= 50 THEN 'Moderate Popularity, Moderate Energy, Moderate Danceability'
+        ELSE 'Other'
+    END AS category
+FROM BIT_DB.Spotifydata;
