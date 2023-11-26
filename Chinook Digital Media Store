@@ -1,13 +1,18 @@
+#SQL queries to the digital media store 
+
 SELECT * FROM chinook.customers LIMIT 10;
 
+#1. all customers who are not in the usa 
 SELECT firstname, lastname, country 
 FROM chinook.customers
 WHERE country <>'USA';
 
+#2. all customers who lives in Brazil
 SELECT customerid, firstname, lastname, country 
 FROM chinook.customers
 WHERE country = 'Brazil';
 
+#3. the full name, invoices date and billingcountry from the customers in Germany
 SELECT c.firstname || ' ' || c.lastname as Fullname,
 i.invoiceid,i.invoicedate,i.billingcountry
 FROM customers c
@@ -15,12 +20,15 @@ JOIN invoices i
 ON c.customerid=i.customerid
 WHERE i.billingcountry='Germany';
 
+#4. all the employees with a sales support agent title 
 SELECT * FROM chinook.employees
 WHERE title='Sales Support Agent';
 
+#5. the employee who had the most reports 
 SELECT firstname || ' ' || lastname AS full_name, MAX(reportsto), email
 FROM chinook.employees;
 
+#6. the total sales made by each sale agent 
 SELECT emp.FirstName, emp.LastName,
 ROUND(SUM(Inv.Total), 2) as 'Total Sales' 
 FROM chinook.Employees emp
@@ -29,17 +37,21 @@ JOIN chinook.Invoices Inv ON Inv.CustomerId = cust.CustomerId
 WHERE emp.Title = 'Sales Support Agent' 
 GROUP BY emp.FirstName;
 
+#7. listed all the countries from the invoices table
 SELECT DISTINCT billingcountry FROM invoices
 GROUP BY billingcountry;
 
+#8. the amount of invoices from that started with the year 2009
 SELECT COUNT(*) FROM chinook.invoices
 WHERE invoicedate LIKE '2009%';
 
+#9. shows the track name and invoices line id 
 SELECT t.Name, i.InvoiceLineId
 FROM chinook.Invoice_items i
 JOIN chinook.Tracks t 
 ON i.TrackId = t.TrackId;
 
+#10. shows the most album that sold the most 
 SELECT a.albumid,
      a.title AS album_title,
     ar.name AS artist_name,
@@ -51,6 +63,7 @@ JOIN chinook.artists ar ON a.artistid = ar.artistid
 GROUP BY a.albumid, album_title, artist_name
 ORDER BY total_sold DESC LIMIT 1;
 
+11. the genre with the most track
 SELECT g.name as genre_name
        ,COUNT(trackid) AS track_count
 FROM chinook.genres g
@@ -58,6 +71,7 @@ JOIN chinook.tracks t on g.genreid=t.genreid
 GROUP BY genre_name
 ORDER BY track_count desc;
 
+#12. show the media type with the most tracks and total duration time
 SELECT mt.name AS media_type,
     COUNT(t.trackid) AS total_tracks,
     SUM(t.milliseconds) AS total_duration
@@ -66,6 +80,7 @@ JOIN chinook.tracks t ON mt.mediatypeid = t.mediatypeid
 GROUP BY media_type
 ORDER BY total_tracks DESC;
 
+#13 shows the artist and how many tracks and albums they have released
 SELECT
     ar.artistid,
     ar.name AS artist_name,
@@ -77,6 +92,7 @@ INNER JOIN chinook.tracks t ON a.albumid = t.albumid
 GROUP BY ar.artistid, artist_name
 ORDER BY ar.artistid;
 
+#14. shows the track name, album title, which media type they are and genre
 SELECT t.Name AS Track_Name, a.Title AS Album_Title, m.Name AS Media_Type, g.Name AS Genre
 FROM chinook.tracks t
 JOIN chinook.Albums a 
@@ -86,6 +102,7 @@ on m.MediaTypeId = t.MediaTypeId
 JOIN chinook.Genres g
 on g.GenreId = t.GenreId;
 
+#15. shows if the duration of the tracks and descides if they are Short, Medium or long
 SELECT
     trackid,
     name AS track_name,
