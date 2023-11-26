@@ -1,0 +1,98 @@
+SELECT * FROM chinook.customers LIMIT 10;
+
+SELECT firstname, lastname, country 
+FROM chinook.customers
+WHERE country <>'USA';
+
+SELECT customerid, firstname, lastname, country 
+FROM chinook.customers
+WHERE country = 'Brazil';
+
+SELECT c.firstname || ' ' || c.lastname as Fullname,
+i.invoiceid,i.invoicedate,i.billingcountry
+FROM customers c
+JOIN invoices i
+ON c.customerid=i.customerid
+WHERE i.billingcountry='Germany';
+
+SELECT * FROM chinook.employees
+WHERE title='Sales Support Agent';
+
+SELECT firstname || ' ' || lastname AS full_name, MAX(reportsto), email
+FROM chinook.employees;
+
+SELECT emp.FirstName, emp.LastName,
+ROUND(SUM(Inv.Total), 2) as 'Total Sales' 
+FROM chinook.Employees emp
+JOIN chinook.Customers cust ON cust.SupportRepId = emp.EmployeeId
+JOIN chinook.Invoices Inv ON Inv.CustomerId = cust.CustomerId
+WHERE emp.Title = 'Sales Support Agent' 
+GROUP BY emp.FirstName;
+
+SELECT DISTINCT billingcountry FROM invoices
+GROUP BY billingcountry;
+
+SELECT COUNT(*) FROM chinook.invoices
+WHERE invoicedate LIKE '2009%';
+
+SELECT t.Name, i.InvoiceLineId
+FROM chinook.Invoice_items i
+JOIN chinook.Tracks t 
+ON i.TrackId = t.TrackId;
+
+SELECT a.albumid,
+     a.title AS album_title,
+    ar.name AS artist_name,
+    SUM(ii.quantity * ii.unitprice) AS total_sold
+FROM chinook.invoice_items ii
+JOIN chinook.tracks t ON ii.trackid = t.trackid
+JOIN chinook.albums a ON t.albumid = a.albumid
+JOIN chinook.artists ar ON a.artistid = ar.artistid
+GROUP BY a.albumid, album_title, artist_name
+ORDER BY total_sold DESC LIMIT 1;
+
+SELECT g.name as genre_name
+       ,COUNT(trackid) AS track_count
+FROM chinook.genres g
+JOIN chinook.tracks t on g.genreid=t.genreid
+GROUP BY genre_name
+ORDER BY track_count desc;
+
+SELECT mt.name AS media_type,
+    COUNT(t.trackid) AS total_tracks,
+    SUM(t.milliseconds) AS total_duration
+FROM chinook.media_types mt
+JOIN chinook.tracks t ON mt.mediatypeid = t.mediatypeid
+GROUP BY media_type
+ORDER BY total_tracks DESC;
+
+SELECT
+    ar.artistid,
+    ar.name AS artist_name,
+    COUNT(DISTINCT t.trackid) AS total_tracks,
+    COUNT(DISTINCT a.albumid) AS total_albums
+FROM chinook.artists ar
+INNER JOIN chinook.albums a ON ar.artistid = a.artistid
+INNER JOIN chinook.tracks t ON a.albumid = t.albumid
+GROUP BY ar.artistid, artist_name
+ORDER BY ar.artistid;
+
+SELECT t.Name AS Track_Name, a.Title AS Album_Title, m.Name AS Media_Type, g.Name AS Genre
+FROM chinook.tracks t
+JOIN chinook.Albums a 
+on a.AlbumId = t.AlbumId
+JOIN chinook.Media_Types m
+on m.MediaTypeId = t.MediaTypeId
+JOIN chinook.Genres g
+on g.GenreId = t.GenreId;
+
+SELECT
+    trackid,
+    name AS track_name,
+    CASE
+        WHEN milliseconds < 180000 THEN 'Short'
+        WHEN milliseconds >= 180000 AND milliseconds < 300000 THEN 'Medium'
+        WHEN milliseconds >= 300000 THEN 'Long'
+        ELSE 'Other'
+    END AS duration_category
+FROM chinook.tracks;
